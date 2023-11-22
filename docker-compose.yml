@@ -1,0 +1,47 @@
+version: '3.4'
+
+services:
+
+  chatRoom_minio:
+    image: minio/minio:latest
+    container_name: ChatRoom_MinIO
+    ports:
+      - 9200:9000
+      - 9290:9090
+    environment:
+      - TZ=Asia/Shanghai
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=Password123
+    volumes:
+      - .\MinIO\data:/data
+      - .\MinIO\config:/root/.minio
+    command: server /data --console-address ":9090"
+    
+  chatRoom_redis:
+    image: redis:alpine
+    container_name: ChatRoom_Redis
+    ports:
+      - 6879:6379
+    volumes:
+      - .\Redis\redis.conf:/etc/redis/redis.conf
+      - .\Redis\data:/data
+    environment:
+      - TZ=Asia/Shanghai
+    logging:
+      options:
+        max-size: 100m
+        max-file: 2
+    command: redis-server /etc/redis/redis.conf  --appendonly yes  --requirepass Password123
+
+  chatRoom_seq:
+    image: datalust/seq
+    container_name: ChatRoom_Seq
+    ports:
+      - 8881:80
+      - 5741:5341
+    environment:
+      - TZ=Asia/Shanghai
+      - ACCEPT_EULA=Y
+      - SEQ_CACHE_SYSTEMTAMTARGET=0
+    volumes:
+      - .\Seq\data:/data

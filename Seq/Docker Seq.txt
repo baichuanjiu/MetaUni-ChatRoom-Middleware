@@ -1,0 +1,1 @@
+docker run --name ChatRoom_Seq -d -e ACCEPT_EULA=Y -e "TZ=Asia/Shanghai" -v ${pwd}\data:/data -e SEQ_CACHE_SYSTEMRAMTARGET=0 -p 8881:80 -p 5741:5341 datalust/seq
